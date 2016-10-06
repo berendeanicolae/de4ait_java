@@ -22,7 +22,7 @@ public class SymTabEntryImpl extends HashMap<SymTabKey, Object> implements SymTa
      * @param name the name of the entry.
      * @param symTab the symbol table that contains this entry.
      */
-    public SymTabEntryImpl(String name, SymTabImpl symTab) {
+    public SymTabEntryImpl(String name, SymTab symTab) {
         this.name = name;
         this.symTab = symTab;
         lineNumbers = new ArrayList<>();

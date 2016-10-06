@@ -1,7 +1,7 @@
 package intermediate;
 
 /**
- * Created by nberendea on 10/4/2016.
+ * SymTabKey
  */
 public interface SymTabKey {
 }

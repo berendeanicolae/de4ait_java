@@ -1,8 +1,6 @@
 package intermediate.symtabimpl;
 
-import intermediate.SymTab;
-import intermediate.SymTabEntry;
-import intermediate.SymTabStack;
+import intermediate.*;
 
 import java.util.ArrayList;
 
@@ -17,9 +15,9 @@ public class SymTabStackImpl extends ArrayList<SymTab> implements SymTabStack {
     /**
      * Constructor
      */
-    SymTabStackImpl() {
+    public SymTabStackImpl() {
         currentNestingLevel = 0;
-        add(new SymTabImpl(currentNestingLevel));
+        add(SymTabFactory.createSymTab(currentNestingLevel));
     }
 
     /**

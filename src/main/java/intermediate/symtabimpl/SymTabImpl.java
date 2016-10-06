@@ -1,10 +1,8 @@
 package intermediate.symtabimpl;
 
-import intermediate.SymTab;
-import intermediate.SymTabEntry;
+import intermediate.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -20,7 +18,7 @@ public class SymTabImpl extends TreeMap<String, SymTabEntry> implements SymTab {
      * Constructor
      * @param nestingLevel the nesting level of the symbol table.
      */
-    SymTabImpl(int nestingLevel) {
+    public SymTabImpl(int nestingLevel) {
         this.nestingLevel = nestingLevel;
     }
 
@@ -40,7 +38,7 @@ public class SymTabImpl extends TreeMap<String, SymTabEntry> implements SymTab {
      */
     @Override
     public SymTabEntry enter(String name) {
-        SymTabEntry entry = new SymTabEntryImpl(name, this);
+        SymTabEntry entry = SymTabFactory.createSymTabEntry(name, this);
         put(name, entry);
 
         return entry;
