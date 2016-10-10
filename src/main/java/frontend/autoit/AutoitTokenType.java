@@ -49,5 +49,4 @@ public enum AutoitTokenType implements TokenType {
     RIGHT_BRACKET,
 
     ADD_ASSIGN,
-    MINUS
 }
