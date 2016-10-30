@@ -1,0 +1,20 @@
+package frontend;
+
+import intermediate.Icode;
+
+terminal String IDENTIFIER;
+terminal Integer INT_LIT;
+terminal String STRING_LIT;
+terminal Double FLOAT_LIT;
+
+nonterminal ICodeNode Statements;
+
+start with Statements;
+
+Statements
+    ::= IDENTIFIER:id
+        {:
+        :}
+    ;
+
+
