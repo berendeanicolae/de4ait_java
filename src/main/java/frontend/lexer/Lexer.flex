@@ -1,13 +1,15 @@
-package frontend;
+package frontend.lexer;
 
 import java_cup.runtime.*;
+import frontend.parser.sym;
 
 %%
 
 %public
 
 %class Lexer
-%type Token
+%type Symbol
+%cup
 %line
 %column
 
@@ -22,7 +24,7 @@ ALPHA       = [a-zA-Z_]
 {WHITESPACE} { /* ignore */ }
 {NEWLINE} { /* ignore */ }
 
-{ALPHA}({ALPHA}|{DIGIT})* {}
+// ${ALPHA}({ALPHA}|{DIGIT})* {}
 {DIGIT}+ {}
 
 . { /* error */ }

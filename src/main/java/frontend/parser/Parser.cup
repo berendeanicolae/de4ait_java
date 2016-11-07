@@ -1,0 +1,167 @@
+package frontend.parser;
+
+import intermediate.ICode;
+
+parser code {:
+:};
+
+terminal ADD_ASSIGN, SUB_ASSIGN, MUL_ASSIGN, DIV_ASSIGN, AND_ASSIGN;
+terminal ADD_OP, SUB_OP, MUL_OP, DIV_OP, POW_OP, AND_OP;
+terminal EQ_OP, EQEQ_OP, NE_OP, GT_OP, GE_OP, LT_OP, LE_OP;
+terminal AND, OR, NOT;
+terminal COND, COLON;
+terminal LPAREN, RPAREN, LBRACE, RBRACE;
+terminal String IDENTIFIER;
+terminal Integer INT_LIT;
+terminal String STRING_LIT;
+
+nonterminal ICodeNode StatementList, Statement;
+nonterminal ICodeNode AssignmentStatement, IfStatement, WhileStatement, ForStatement, DoWhileStatement;
+nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
+nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
+nonterminal ICodeNode VarAccess;
+nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
+
+start with StatementList;
+
+StatementList
+    ::= Statement
+        {:
+        :}
+    |
+        StatementList Statement
+        {:
+        :}
+    ;
+
+Statement
+    ::= AssignmentStatement
+        {:
+        :}
+    ;
+
+AssignmentStatement
+    ::= VarAccess AssignmentOperator Expression
+        {:
+        :}
+    ;
+
+Expression
+    ::= ConditionalExpression
+        {:
+        :}
+    ;
+
+ConditionalExpression
+    ::= LogicalExpression
+        {:
+        :}
+    |
+        LogicalExpression COND ConditionalExpression COLON ConditionalExpression
+        {:
+        :}
+    ;
+
+LogicalExpression
+    ::= RelationalExpression
+        {:
+        :}
+    |
+        LogicalExpression AND RelationalExpression
+        {:
+        :}
+    |
+        LogicalExpression OR RelationalExpression
+        {:
+        :}
+    ;
+
+RelationalExpression
+    ::= ConcatenationExpression
+        {:
+        :}
+    |
+        RelationalExpression ComparisonOperator ConcatenationExpression
+        {:
+        :}
+    ;
+
+ConcatenationExpression
+    ::= AdditiveExpression
+        {:
+        :}
+    |
+        ConcatenationExpression AND_OP AdditiveExpression
+        {:
+        :}
+    ;
+
+AdditiveExpression
+    ::= MultiplicativeExpression
+        {:
+        :}
+    |
+        AdditiveExpression ADD_OP MultiplicativeExpression
+        {:
+        :}
+    |
+        AdditiveExpression SUB_OP MultiplicativeExpression
+        {:
+        :}
+    ;
+
+MultiplicativeExpression
+    ::= SignExpression
+        {:
+        :}
+    |
+        MultiplicativeExpression MUL_OP SignExpression
+        {:
+        :}
+    |
+        MultiplicativeExpression DIV_OP SignExpression
+        {:
+        :}
+    ;
+
+SignExpression
+    ::= NegationExpression
+        {:
+        :}
+    |
+        ADD_OP SignExpression
+        {:
+        :}
+    |
+        SUB_OP SignExpression
+        {:
+        :}
+    ;
+
+NegationExpression
+    ::= Primary
+        {:
+        :}
+    |
+        NOT NegationExpression
+        {:
+        :}
+    ;
+
+Primary
+    ::= VarAccess
+        {:
+        :}
+    |
+        INT_LIT
+        {:
+        :}
+    |
+        STRING_LIT
+        {:
+        :}
+    |
+        LPAREN Expression RPAREN
+        {:
+        :}
+    ;
