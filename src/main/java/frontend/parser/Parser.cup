@@ -1,8 +1,13 @@
 package frontend.parser;
 
 import intermediate.ICode;
+import intermediate.ICodeNode;
 
 parser code {:
+    protected ICode root;
+
+    public void setRoot(ICode node) { root = node; }
+    public ICode getRoot() { return root; }
 :};
 
 terminal ADD_ASSIGN, SUB_ASSIGN, MUL_ASSIGN, DIV_ASSIGN, AND_ASSIGN;
