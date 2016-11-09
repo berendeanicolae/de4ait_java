@@ -37,7 +37,7 @@ ALPHA       = [a-zA-Z_]
 "WHILE" { return new Symbol(sym.WHILE, yychar, yychar+yytext().length()-1); }
 "WEND" { return new Symbol(sym.WEND, yychar, yychar+yytext().length()-1); }
 "FOR" { return new Symbol(sym.FOR, yychar, yychar+yytext().length()-1); }
-"EXITLOOP" { return new Symbol(sym.EXITLOOP, yychar, yychar+yytext().length-1); }
+"EXITLOOP" { return new Symbol(sym.EXITLOOP, yychar, yychar+yytext().length()-1); }
 
 {ALPHA}({ALPHA}|{DIGIT})* { return new Symbol(sym.IDENTIFIER, yychar, yychar+yytext().length()-1); }
 \@{ALPHA}+ { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1);}

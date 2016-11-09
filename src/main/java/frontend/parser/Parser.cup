@@ -23,12 +23,12 @@ terminal String STRING_LIT;
 
 nonterminal ICodeNode StatementList, Statement;
 nonterminal ICodeNode AssignmentStatement;
-nonterminal ICodeNode IfStatement, IfStatementWithoutElse
+nonterminal ICodeNode IfStatement, IfStatementWithoutElse;
 nonterminal ICodeNode SwitchStatement, CaseList, Case, CaseValueList, CaseValue;
-nonterminal ICodeNode ExitloopStatement, WhileStatement, ForStatement, DoWhileStatement;
+nonterminal ICodeNode ExitLoopStatement, WhileStatement, ForStatement, DoWhileStatement;
 nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
 nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
-nonterminal ICodeNode VarAccess, FunctionDesignator, SignedIntLit, Params;
+nonterminal ICodeNode VarAccess, FunctionDesignator, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
 start with StatementList;
@@ -45,6 +45,18 @@ StatementList
 
 Statement
     ::= AssignmentStatement
+        {:
+        :}
+    |
+        IfStatement
+        {:
+        :}
+    |
+        SwitchStatement
+        {:
+        :}
+    |
+        ExitLoopStatement
         {:
         :}
     ;
@@ -127,6 +139,36 @@ RelationalExpression
         :}
     |
         RelationalExpression ComparisonOperator ConcatenationExpression
+        {:
+        :}
+    ;
+
+ComparisonOperator
+    ::= EQ_OP
+        {:
+        :}
+    |
+        EQEQ_OP
+        {:
+        :}
+    |
+        NE_OP
+        {:
+        :}
+    |
+        GT_OP
+        {:
+        :}
+    |
+        GE_OP
+        {:
+        :}
+    |
+        LT_OP
+        {:
+        :}
+    |
+        LE_OP
         {:
         :}
     ;
@@ -261,7 +303,7 @@ IfStatementWithoutElse
         :}
     ;
 
-ExitloopStatement
+ExitLoopStatement
     ::= EXITLOOP
         {:
         :}
@@ -295,6 +337,14 @@ Case
         CASE ELSE StatementList
         {:
         :}
+    |
+        CASE CaseValueList
+         {:
+         :}
+    |
+        CASE ELSE
+        {:
+        :}
     ;
 
 CaseValueList
@@ -304,25 +354,11 @@ CaseValueList
     ;
 
 CaseValue
-    ::= SignedIntLit
+    ::= Expression
         {:
         :}
     |
-        SignedIntLit TO SignedIntLit
-        {:
-        :}
-    ;
-
-SignedIntLit
-    ::= INT_LIT
-        {:
-        :}
-    |
-        ADD_OP INT_LIT
-        {:
-        :}
-    |
-        SUB_OP INT_LIT
+        Expression TO Expression
         {:
         :}
     ;
