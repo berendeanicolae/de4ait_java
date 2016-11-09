@@ -14,17 +14,18 @@ terminal ADD_ASSIGN, SUB_ASSIGN, MUL_ASSIGN, DIV_ASSIGN, AND_ASSIGN;
 terminal ADD_OP, SUB_OP, MUL_OP, DIV_OP, POW_OP, AND_OP;
 terminal EQ_OP, EQEQ_OP, NE_OP, GT_OP, GE_OP, LT_OP, LE_OP;
 terminal AND, OR, NOT;
-terminal COND, COLON;
-terminal LPAREN, RPAREN, LBRACE, RBRACE;
+terminal COND, COLON, DOLLAR, COMMA;
+terminal LPAREN, RPAREN, LBRAC, RBRAC;
+terminal IF, THEN, ELSE, ELSEIF, ENDIF, WHILE, WEND, FOR;
 terminal String IDENTIFIER;
 terminal Integer INT_LIT;
 terminal String STRING_LIT;
 
 nonterminal ICodeNode StatementList, Statement;
-nonterminal ICodeNode AssignmentStatement, IfStatement, WhileStatement, ForStatement, DoWhileStatement;
+nonterminal ICodeNode AssignmentStatement, IfStatement, IfStatementWithElse, WhileStatement, ForStatement, DoWhileStatement;
 nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
 nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
-nonterminal ICodeNode VarAccess;
+nonterminal ICodeNode VarAccess, FunctionDesignator, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
 start with StatementList;
@@ -47,6 +48,42 @@ Statement
 
 AssignmentStatement
     ::= VarAccess AssignmentOperator Expression
+        {:
+        :}
+    ;
+
+VarAccess
+    ::= DOLLAR IDENTIFIER
+        {:
+        :}
+    |
+        VarAccess LBRAC Expression RBRAC
+        {:
+        :}
+    ;
+
+AssignmentOperator
+    ::= EQ_OP
+        {:
+        :}
+    |
+        ADD_ASSIGN
+        {:
+        :}
+    |
+        SUB_ASSIGN
+        {:
+        :}
+    |
+        MUL_ASSIGN
+        {:
+        :}
+    |
+        DIV_ASSIGN
+        {:
+        :}
+    |
+        AND_ASSIGN
         {:
         :}
     ;
@@ -158,6 +195,10 @@ Primary
         {:
         :}
     |
+        FunctionDesignator
+        {:
+        :}
+    |
         INT_LIT
         {:
         :}
@@ -167,6 +208,52 @@ Primary
         :}
     |
         LPAREN Expression RPAREN
+        {:
+        :}
+    ;
+
+FunctionDesignator
+    ::= IDENTIFIER LPAREN Params RPAREN
+        {:
+        :}
+    |
+        IDENTIFIER LPAREN RPAREN
+        {:
+        :}
+    ;
+
+Params
+    ::= Expression
+        {:
+        :}
+    |
+        Params COMMA Expression
+        {:
+        :}
+    ;
+
+WhileStatement
+    ::= WHILE Expression StatementList WEND
+        {:
+        :}
+    ;
+
+IfStatement
+    ::= IfStatementWithoutElse ENDIF
+        {:
+        :}
+    |
+        IfStatementWithoutElse ELSE StatementList ENDIF
+        {:
+        :}
+    ;
+
+IfStatementWithoutElse
+    ::= IF Expression THEN StatementList
+        {:
+        :}
+    |
+        IfStatementWithoutElse ELSEIF Expression THEN StatementList ENDIF
         {:
         :}
     ;
