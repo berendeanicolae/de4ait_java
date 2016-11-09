@@ -30,9 +30,14 @@ ALPHA       = [a-zA-Z_]
 "ELSE" { return new Symbol(sym.THEN, yychar, yychar+yytext().length()-1); }
 "ELSEIF" { return new Symbol(sym.THEN, yychar, yychar+yytext().length()-1); }
 "ENDIF" { return new Symbol(sym.ENDIF, yychar, yychar+yytext().length()-1); }
+"SWITCH" { return new Symbol(sym.SWITCH, yychar, yychar+yytext().length()-1); }
+"CASE" { return new Symbol(sym.CASE, yychar, yychar+yytext().length()-1); }
+"TO" { return new Symbol(sym.TO, yychar, yychar+yytext().length()-1); }
+"ENDSWITCH" { return new Symbol(sym.ENDSWITCH, yychar, yychar+yytext().length()-1); }
 "WHILE" { return new Symbol(sym.WHILE, yychar, yychar+yytext().length()-1); }
 "WEND" { return new Symbol(sym.WEND, yychar, yychar+yytext().length()-1); }
 "FOR" { return new Symbol(sym.FOR, yychar, yychar+yytext().length()-1); }
+"EXITLOOP" { return new Symbol(sym.EXITLOOP, yychar, yychar+yytext().length-1); }
 
 {ALPHA}({ALPHA}|{DIGIT})* { return new Symbol(sym.IDENTIFIER, yychar, yychar+yytext().length()-1); }
 \@{ALPHA}+ { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1);}

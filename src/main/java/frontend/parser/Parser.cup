@@ -16,16 +16,19 @@ terminal EQ_OP, EQEQ_OP, NE_OP, GT_OP, GE_OP, LT_OP, LE_OP;
 terminal AND, OR, NOT;
 terminal COND, COLON, DOLLAR, COMMA;
 terminal LPAREN, RPAREN, LBRAC, RBRAC;
-terminal IF, THEN, ELSE, ELSEIF, ENDIF, WHILE, WEND, FOR;
+terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR;
 terminal String IDENTIFIER;
 terminal Integer INT_LIT;
 terminal String STRING_LIT;
 
 nonterminal ICodeNode StatementList, Statement;
-nonterminal ICodeNode AssignmentStatement, IfStatement, IfStatementWithElse, WhileStatement, ForStatement, DoWhileStatement;
+nonterminal ICodeNode AssignmentStatement;
+nonterminal ICodeNode IfStatement, IfStatementWithoutElse
+nonterminal ICodeNode SwitchStatement, CaseList, Case, CaseValueList, CaseValue;
+nonterminal ICodeNode ExitloopStatement, WhileStatement, ForStatement, DoWhileStatement;
 nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
 nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
-nonterminal ICodeNode VarAccess, FunctionDesignator, Params;
+nonterminal ICodeNode VarAccess, FunctionDesignator, SignedIntLit, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
 start with StatementList;
@@ -254,6 +257,72 @@ IfStatementWithoutElse
         :}
     |
         IfStatementWithoutElse ELSEIF Expression THEN StatementList ENDIF
+        {:
+        :}
+    ;
+
+ExitloopStatement
+    ::= EXITLOOP
+        {:
+        :}
+    |
+        EXITLOOP Expression
+        {:
+        :}
+    ;
+
+SwitchStatement
+    ::= SWITCH Expression CaseList ENDSWITCH
+        {:
+        :}
+    ;
+
+CaseList
+    ::= CaseList Case
+        {:
+        :}
+    |
+        Case
+        {:
+        :}
+    ;
+
+Case
+    ::= CASE CaseValueList StatementList
+        {:
+        :}
+    |
+        CASE ELSE StatementList
+        {:
+        :}
+    ;
+
+CaseValueList
+    ::= CaseValueList COMMA CaseValue
+        {:
+        :}
+    ;
+
+CaseValue
+    ::= SignedIntLit
+        {:
+        :}
+    |
+        SignedIntLit TO SignedIntLit
+        {:
+        :}
+    ;
+
+SignedIntLit
+    ::= INT_LIT
+        {:
+        :}
+    |
+        ADD_OP INT_LIT
+        {:
+        :}
+    |
+        SUB_OP INT_LIT
         {:
         :}
     ;
