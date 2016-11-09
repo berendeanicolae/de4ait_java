@@ -17,6 +17,7 @@ terminal AND, OR, NOT;
 terminal COND, COLON, DOLLAR, COMMA;
 terminal LPAREN, RPAREN, LBRAC, RBRAC;
 terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR;
+terminal SEP;
 terminal String IDENTIFIER;
 terminal Integer INT_LIT;
 terminal String STRING_LIT;
@@ -31,15 +32,19 @@ nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpressi
 nonterminal ICodeNode VarAccess, FunctionDesignator, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
+// precedence right SEP;
+
 start with StatementList;
 
 StatementList
-    ::= Statement
+    ::= Statement SEP
         {:
+            System.out.println("StatementList => Statement");
         :}
     |
-        StatementList Statement
+        StatementList Statement SEP
         {:
+            System.out.println("StatementList => Statement");
         :}
     ;
 
@@ -54,9 +59,14 @@ Statement
     |
         SwitchStatement
         {:
+            System.out.println("Statement => SwitchStatement");
         :}
     |
         ExitLoopStatement
+        {:
+        :}
+    |
+        FunctionDesignator
         {:
         :}
     ;
@@ -278,30 +288,30 @@ Params
     ;
 
 WhileStatement
-    ::= WHILE Expression StatementList WEND
+    ::= WHILE Expression SEP StatementList SEP WEND
         {:
         :}
     ;
 
-IfStatement
-    ::= IfStatementWithoutElse ENDIF
-        {:
-        :}
-    |
-        IfStatementWithoutElse ELSE StatementList ENDIF
-        {:
-        :}
-    ;
-
-IfStatementWithoutElse
-    ::= IF Expression THEN StatementList
-        {:
-        :}
-    |
-        IfStatementWithoutElse ELSEIF Expression THEN StatementList ENDIF
-        {:
-        :}
-    ;
+//IfStatement
+//    ::= IfStatementWithoutElse ENDIF
+//        {:
+//        :}
+//    |
+//        IfStatementWithoutElse ELSE StatementList ENDIF
+//        {:
+//        :}
+//    ;
+//
+//IfStatementWithoutElse
+//    ::= IF Expression THEN SEP StatementList
+//        {:
+//        :}
+//    |
+//        IfStatementWithoutElse SEP ELSEIF Expression THEN StatementList ENDIF
+//        {:
+//        :}
+//    ;
 
 ExitLoopStatement
     ::= EXITLOOP
@@ -314,8 +324,9 @@ ExitLoopStatement
     ;
 
 SwitchStatement
-    ::= SWITCH Expression CaseList ENDSWITCH
+    ::= SWITCH Expression SEP CaseList ENDSWITCH
         {:
+            System.out.println("SwitchStatement => SWITCH Expression SEP CaseList ENDSWITCH");
         :}
     ;
 
@@ -330,25 +341,29 @@ CaseList
     ;
 
 Case
-    ::= CASE CaseValueList StatementList
+    ::= CASE CaseValueList SEP StatementList
         {:
         :}
     |
-        CASE ELSE StatementList
+        CASE ELSE SEP StatementList
         {:
         :}
     |
-        CASE CaseValueList
+        CASE CaseValueList SEP
          {:
          :}
     |
-        CASE ELSE
+        CASE ELSE SEP
         {:
         :}
     ;
 
 CaseValueList
     ::= CaseValueList COMMA CaseValue
+        {:
+        :}
+        |
+        CaseValue
         {:
         :}
     ;

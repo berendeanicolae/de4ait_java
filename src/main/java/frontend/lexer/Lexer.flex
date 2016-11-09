@@ -23,7 +23,7 @@ ALPHA       = [a-zA-Z_]
 <YYINITIAL> {
 
 {WHITESPACE} { /* ignore */ }
-{NEWLINE} { /* ignore */ }
+{NEWLINE} { return new Symbol(sym.SEP, yychar, yychar+yytext().length()-1); }
 
 "IF" { return new Symbol(sym.IF, yychar, yychar+yytext().length()-1); }
 "THEN" { return new Symbol(sym.THEN, yychar, yychar+yytext().length()-1); }
@@ -43,7 +43,7 @@ ALPHA       = [a-zA-Z_]
 \@{ALPHA}+ { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1);}
 {DIGIT}+ { return new Symbol(sym.INT_LIT, yychar, yychar+yytext().length()-1); }
 \"(\\.|[^\\\"])*\" { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1); }
-"#".+ {}
+"#".+"\r\n" {}
 
 "+=" { return new Symbol(sym.ADD_ASSIGN, yychar, yychar+yytext().length()-1); }
 "-=" { return new Symbol(sym.SUB_ASSIGN, yychar, yychar+yytext().length()-1); }
@@ -79,6 +79,7 @@ ALPHA       = [a-zA-Z_]
 ")" { return new Symbol(sym.RPAREN, yychar, yychar+yytext().length()-1); }
 "[" { return new Symbol(sym.LBRAC, yychar, yychar+yytext().length()-1); }
 "]" { return new Symbol(sym.RBRAC, yychar, yychar+yytext().length()-1); }
+
 
 . { /* error */ }
 }
