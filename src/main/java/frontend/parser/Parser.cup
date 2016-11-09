@@ -39,12 +39,10 @@ start with StatementList;
 StatementList
     ::= Statement SEP
         {:
-            System.out.println("StatementList => Statement");
         :}
     |
         StatementList Statement SEP
         {:
-            System.out.println("StatementList => Statement");
         :}
     ;
 
@@ -59,7 +57,10 @@ Statement
     |
         SwitchStatement
         {:
-            System.out.println("Statement => SwitchStatement");
+        :}
+    |
+        WhileStatement
+        {:
         :}
     |
         ExitLoopStatement
@@ -288,30 +289,30 @@ Params
     ;
 
 WhileStatement
-    ::= WHILE Expression SEP StatementList SEP WEND
+    ::= WHILE Expression SEP StatementList WEND
         {:
         :}
     ;
 
-//IfStatement
-//    ::= IfStatementWithoutElse ENDIF
-//        {:
-//        :}
-//    |
-//        IfStatementWithoutElse ELSE StatementList ENDIF
-//        {:
-//        :}
-//    ;
-//
-//IfStatementWithoutElse
-//    ::= IF Expression THEN SEP StatementList
-//        {:
-//        :}
-//    |
-//        IfStatementWithoutElse SEP ELSEIF Expression THEN StatementList ENDIF
-//        {:
-//        :}
-//    ;
+IfStatement
+    ::= IfStatementWithoutElse ENDIF
+        {:
+        :}
+    |
+        IfStatementWithoutElse ELSE StatementList ENDIF
+        {:
+        :}
+    ;
+
+IfStatementWithoutElse
+    ::= IF Expression THEN SEP StatementList
+        {:
+        :}
+    |
+        IfStatementWithoutElse ELSEIF Expression THEN SEP StatementList ENDIF
+        {:
+        :}
+    ;
 
 ExitLoopStatement
     ::= EXITLOOP
@@ -326,7 +327,6 @@ ExitLoopStatement
 SwitchStatement
     ::= SWITCH Expression SEP CaseList ENDSWITCH
         {:
-            System.out.println("SwitchStatement => SWITCH Expression SEP CaseList ENDSWITCH");
         :}
     ;
 
