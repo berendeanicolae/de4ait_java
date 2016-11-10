@@ -51,11 +51,15 @@ ALPHA       = [a-zA-Z_]
 "OR" { return new Symbol(sym.OR, yychar, yychar+yytext().length()-1); }
 "NOT" { return new Symbol(sym.NOT, yychar, yychar+yytext().length()-1); }
 "EXIT" { return new Symbol(sym.EXIT, yychar, yychar+yytext().length()-1); }
+"TRUE" { return new Symbol(sym.BOOL_LIT, yychar, yychar+yytext().length()-1); }
+"FALSE" { return new Symbol(sym.BOOL_LIT, yychar, yychar+yytext().length()-1); }
+"NEXT" { return new Symbol(sym.NEXT, yychar, yychar+yytext().length()-1); }
+"STEP" { return new Symbol(sym.STEP, yychar, yychar+yytext().length()-1); }
 
-{ALPHA}({ALPHA}|{DIGIT})* { return new Symbol(sym.IDENTIFIER, yychar, yychar+yytext().length()-1); }
-\@{ALPHA}+ { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1);}
 {DIGIT}+ { return new Symbol(sym.INT_LIT, yychar, yychar+yytext().length()-1); }
-\"(\\.|[^\\\"])*\" { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1); }
+{ALPHA}({ALPHA}|{DIGIT})* { System.out.println(yytext());return new Symbol(sym.IDENTIFIER, yychar, yychar+yytext().length()-1); }
+\@({ALPHA}|{DIGIT})+ { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1);}
+\"([^\"]|\"\")*\" { return new Symbol(sym.STRING_LIT, yychar, yychar+yytext().length()-1); }
 "#".+"\r\n" {}
 
 "+=" { return new Symbol(sym.ADD_ASSIGN, yychar, yychar+yytext().length()-1); }

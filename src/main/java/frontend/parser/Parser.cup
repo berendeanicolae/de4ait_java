@@ -1,5 +1,7 @@
 package frontend.parser;
 
+// TODO: ReDim, Power, ArrayInitialization
+
 import intermediate.ICode;
 import intermediate.ICodeNode;
 
@@ -17,23 +19,24 @@ terminal AND, OR, NOT;
 terminal COND, COLON, DOLLAR, COMMA;
 terminal LPAREN, RPAREN, LBRAC, RBRAC;
 terminal EXIT, FUNC, RETURN, ENDFUNC;
-terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR, DO, UNTIL;
+terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR, STEP, NEXT, DO, UNTIL;
 terminal DIM, GLOBAL, LOCAL, CONST;
 terminal SEP;
 terminal String IDENTIFIER;
 terminal Integer INT_LIT;
 terminal String STRING_LIT;
+terminal Boolean BOOL_LIT;
 
-nonterminal ICodeNode OptionalStatementList, StatementList, Statement;
+nonterminal ICodeNode OptionalStatementList, StatementList, Statement, ShortStatement;
 nonterminal ICodeNode AssignmentStatement;
 nonterminal ICodeNode IfStatement, IfStatementWithoutElse;
 nonterminal ICodeNode SwitchStatement, CaseList, Case, CaseValueList, CaseValue;
 nonterminal ICodeNode ExitLoopStatement, WhileStatement, ForStatement, DoWhileStatement;
 nonterminal ICodeNode ReturnStatement, ExitStatement;
-nonterminal ICodeNode VariableDeclaration, VariableModifier;
+nonterminal ICodeNode Declaration, VariableModifier, VariableDeclarationList, VariableDeclaration;
 nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
 nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
-nonterminal ICodeNode FunctionDefinition, VarAccess, FunctionDesignator, OptArgs, Args, Params;
+nonterminal ICodeNode FunctionDefinition, VarAccess, FunctionDesignator, OptArgs, Args, Arg, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
 // precedence nonassoc SEP;
@@ -49,17 +52,17 @@ OptionalStatementList
     ;
 
 StatementList
-    ::= Statement
+    ::= Statement SEP
         {:
         :}
     |
-        StatementList SEP Statement
+        StatementList Statement SEP
         {:
         :}
     ;
 
 Statement
-    ::= AssignmentStatement
+    ::= ShortStatement
         {:
         :}
     |
@@ -75,19 +78,7 @@ Statement
         {:
         :}
     |
-        ExitLoopStatement
-        {:
-        :}
-    |
-        FunctionDesignator
-        {:
-        :}
-    |
         FunctionDefinition
-        {:
-        :}
-    |
-        ReturnStatement
         {:
         :}
     |
@@ -95,11 +86,33 @@ Statement
         {:
         :}
     |
-        VariableDeclaration
+        ForStatement
+        {:
+        :}
+    ;
+
+ShortStatement
+    ::= AssignmentStatement
+        {:
+        :}
+    |
+        Declaration
+        {:
+        :}
+    |
+        ReturnStatement
+        {:
+        :}
+    |
+        ExitLoopStatement
         {:
         :}
     |
         ExitStatement
+        {:
+        :}
+    |
+        FunctionDesignator
         {:
         :}
     ;
@@ -149,7 +162,6 @@ AssignmentOperator
 Expression
     ::= ConditionalExpression
         {:
-            System.out.println("Expression");
         :}
     ;
 
@@ -296,6 +308,10 @@ Primary
         {:
         :}
     |
+        BOOL_LIT
+        {:
+        :}
+    |
         LPAREN Expression RPAREN
         {:
         :}
@@ -336,13 +352,14 @@ IfStatement
         {:
         :}
     |
-        IF Expression THEN SEP Statement
+        IF Expression THEN ShortStatement
+        {:
+        :}
     ;
 
 IfStatementWithoutElse
     ::= IF Expression THEN SEP OptionalStatementList
         {:
-            System.out.println("IfStatementWithoutElse => IF Expression THEN SEP OptionalStatementList");
         :}
     |
         IfStatementWithoutElse ELSEIF Expression THEN SEP OptionalStatementList
@@ -361,7 +378,7 @@ ExitLoopStatement
     ;
 
 SwitchStatement
-    ::= SWITCH Expression SEP CaseList ENDSWITCH
+    ::= SWITCH Expression SEP OptionalStatementList CaseList ENDSWITCH
         {:
         :}
     ;
@@ -429,11 +446,22 @@ OptArgs
     ;
 
 Args
-    ::= DOLLAR IDENTIFIER
+    ::= Arg
         {:
         :}
     |
-        Args COMMA DOLLAR IDENTIFIER
+        Args COMMA Arg
+        {:
+        :}
+    ;
+
+Arg
+    ::=
+        DOLLAR IDENTIFIER
+        {:
+        :}
+    |
+        DOLLAR IDENTIFIER EQ_OP Expression
         {:
         :}
     ;
@@ -450,12 +478,28 @@ DoWhileStatement
         :}
     ;
 
-VariableDeclaration
-    ::= VariableModifier DOLLAR IDENTIFIER
+Declaration
+    ::= VariableModifier VariableDeclarationList
+        {:
+        :}
+    ;
+
+VariableDeclarationList
+    ::= VariableDeclaration
         {:
         :}
     |
-        VariableModifier DOLLAR IDENTIFIER EQ_OP Expression
+        VariableDeclarationList COMMA VariableDeclaration
+        {:
+        :}
+    ;
+
+VariableDeclaration
+    ::= VarAccess
+        {:
+        :}
+    |
+        VarAccess EQ_OP Expression
         {:
         :}
     ;
@@ -480,6 +524,16 @@ VariableModifier
 
 ExitStatement
     ::= EXIT
+        {:
+        :}
+    ;
+
+ForStatement
+    ::= FOR VarAccess EQ_OP Expression TO Expression SEP StatementList NEXT
+        {:
+        :}
+    |
+        FOR VarAccess EQ_OP Expression TO Expression STEP Expression SEP StatementList NEXT
         {:
         :}
     ;
