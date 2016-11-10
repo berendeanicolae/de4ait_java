@@ -15,7 +15,6 @@ public class de4ait {
         }
 
         de4ait de4ait = new de4ait(args[0]);
-        de4ait.run();
     }
 
     private final String source;
@@ -47,6 +46,6 @@ public class de4ait {
 
     private void run() {
         ICode ic = parse();
-        // ic.getRoot();
+        ic.getRoot();
     }
 }
