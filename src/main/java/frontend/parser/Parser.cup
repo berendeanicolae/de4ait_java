@@ -16,32 +16,44 @@ terminal EQ_OP, EQEQ_OP, NE_OP, GT_OP, GE_OP, LT_OP, LE_OP;
 terminal AND, OR, NOT;
 terminal COND, COLON, DOLLAR, COMMA;
 terminal LPAREN, RPAREN, LBRAC, RBRAC;
-terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR;
+terminal EXIT, FUNC, RETURN, ENDFUNC;
+terminal IF, THEN, ELSE, ELSEIF, ENDIF, SWITCH, CASE, TO, ENDSWITCH, EXITLOOP, WHILE, WEND, FOR, DO, UNTIL;
+terminal DIM, GLOBAL, LOCAL, CONST;
 terminal SEP;
 terminal String IDENTIFIER;
 terminal Integer INT_LIT;
 terminal String STRING_LIT;
 
-nonterminal ICodeNode StatementList, Statement;
+nonterminal ICodeNode OptionalStatementList, StatementList, Statement;
 nonterminal ICodeNode AssignmentStatement;
 nonterminal ICodeNode IfStatement, IfStatementWithoutElse;
 nonterminal ICodeNode SwitchStatement, CaseList, Case, CaseValueList, CaseValue;
 nonterminal ICodeNode ExitLoopStatement, WhileStatement, ForStatement, DoWhileStatement;
+nonterminal ICodeNode ReturnStatement, ExitStatement;
+nonterminal ICodeNode VariableDeclaration, VariableModifier;
 nonterminal ICodeNode Expression, ConditionalExpression, LogicalExpression, RelationalExpression, ConcatenationExpression;
 nonterminal ICodeNode AdditiveExpression, MultiplicativeExpression, SignExpression, NegationExpression, Primary;
-nonterminal ICodeNode VarAccess, FunctionDesignator, Params;
+nonterminal ICodeNode FunctionDefinition, VarAccess, FunctionDesignator, OptArgs, Args, Params;
 nonterminal ICodeNode AssignmentOperator, ComparisonOperator;
 
-// precedence right SEP;
+// precedence nonassoc SEP;
 
 start with StatementList;
 
+OptionalStatementList
+    ::=
+    |
+        StatementList
+        {:
+        :}
+    ;
+
 StatementList
-    ::= Statement SEP
+    ::= Statement
         {:
         :}
     |
-        StatementList Statement SEP
+        StatementList SEP Statement
         {:
         :}
     ;
@@ -68,6 +80,26 @@ Statement
         :}
     |
         FunctionDesignator
+        {:
+        :}
+    |
+        FunctionDefinition
+        {:
+        :}
+    |
+        ReturnStatement
+        {:
+        :}
+    |
+        DoWhileStatement
+        {:
+        :}
+    |
+        VariableDeclaration
+        {:
+        :}
+    |
+        ExitStatement
         {:
         :}
     ;
@@ -117,6 +149,7 @@ AssignmentOperator
 Expression
     ::= ConditionalExpression
         {:
+            System.out.println("Expression");
         :}
     ;
 
@@ -289,7 +322,7 @@ Params
     ;
 
 WhileStatement
-    ::= WHILE Expression SEP StatementList WEND
+    ::= WHILE Expression SEP OptionalStatementList WEND
         {:
         :}
     ;
@@ -299,17 +332,20 @@ IfStatement
         {:
         :}
     |
-        IfStatementWithoutElse ELSE StatementList ENDIF
-        {:
-        :}
-    ;
-
-IfStatementWithoutElse
-    ::= IF Expression THEN SEP StatementList
+        IfStatementWithoutElse ELSE SEP OptionalStatementList ENDIF
         {:
         :}
     |
-        IfStatementWithoutElse ELSEIF Expression THEN SEP StatementList ENDIF
+        IF Expression THEN SEP Statement
+    ;
+
+IfStatementWithoutElse
+    ::= IF Expression THEN SEP OptionalStatementList
+        {:
+            System.out.println("IfStatementWithoutElse => IF Expression THEN SEP OptionalStatementList");
+        :}
+    |
+        IfStatementWithoutElse ELSEIF Expression THEN SEP OptionalStatementList
         {:
         :}
     ;
@@ -374,6 +410,76 @@ CaseValue
         :}
     |
         Expression TO Expression
+        {:
+        :}
+    ;
+
+FunctionDefinition
+    ::= FUNC IDENTIFIER LPAREN OptArgs RPAREN SEP StatementList ENDFUNC
+        {:
+        :}
+    ;
+
+OptArgs
+    ::=
+    |
+        Args
+        {:
+        :}
+    ;
+
+Args
+    ::= DOLLAR IDENTIFIER
+        {:
+        :}
+    |
+        Args COMMA DOLLAR IDENTIFIER
+        {:
+        :}
+    ;
+
+ReturnStatement
+    ::= RETURN Expression
+        {:
+        :}
+    ;
+
+DoWhileStatement
+    ::= DO SEP StatementList UNTIL Expression
+        {:
+        :}
+    ;
+
+VariableDeclaration
+    ::= VariableModifier DOLLAR IDENTIFIER
+        {:
+        :}
+    |
+        VariableModifier DOLLAR IDENTIFIER EQ_OP Expression
+        {:
+        :}
+    ;
+
+VariableModifier
+    ::= DIM
+        {:
+        :}
+    |
+        GLOBAL
+        {:
+        :}
+    |
+        LOCAL
+        {:
+        :}
+    |
+        CONST
+        {:
+        :}
+    ;
+
+ExitStatement
+    ::= EXIT
         {:
         :}
     ;
